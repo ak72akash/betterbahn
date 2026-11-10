@@ -10,11 +10,11 @@ def realized_vol(history, fenster: int = 20) -> float:
 
     `history`: DataFrame mit Spalte ``close`` oder eine Reihe von Schlusskursen
     (älteste zuerst)."""
-    kurse = history["close"] if isinstance(history, pd.DataFrame) else pd.Series(list(history))
-    kurse = kurse.astype(float).dropna()
+    roh = history["close"] if isinstance(history, pd.DataFrame) else list(history)
+    kurse = pd.Series(roh, dtype=float).dropna().reset_index(drop=True)
     if len(kurse) < fenster + 1:
         raise ValueError(f"Zu wenig Kursdaten: {len(kurse)} Schlusskurse, benötigt {fenster + 1}")
-    r = np.log(kurse / kurse.shift(1)).dropna().iloc[-fenster:]
+    r = pd.Series(np.log(kurse / kurse.shift(1))).dropna().iloc[-fenster:]
     return float(r.std(ddof=1) * np.sqrt(252))
 
 

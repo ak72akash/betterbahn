@@ -59,6 +59,9 @@ def create_app(cfg: Konfig | None = None, kette: AnbieterKette | None = None) ->
                 p.limiter._speichern = db.zaehler_speichern(engine, p.name)
         kette, fehlend = baue_kette(cfg, limiter, verlauf_lesen=partial(db.verlauf_lesen, engine),
                                     verlauf_schreiben=partial(db.verlauf_schreiben, engine))
+    if kette._verlauf_lesen is None:          # übergebene Kette: Verlaufs-Cache nachrüsten
+        kette._verlauf_lesen = partial(db.verlauf_lesen, engine)
+        kette._verlauf_schreiben = partial(db.verlauf_schreiben, engine)
     z = Zustand(cfg=cfg, engine=engine, kette=kette, nicht_konfiguriert=fehlend)
     for k in db.lese_kurse(engine):           # letzter bekannter Stand aus price_cache
         z.store.aktualisiere(k)

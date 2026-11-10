@@ -3,8 +3,10 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 from dataclasses import dataclass, field
+from typing import Any
 
 from fastapi import Depends, Request, WebSocket
+from sqlalchemy.engine import Engine
 from sqlmodel import Session
 
 from app import db
@@ -19,7 +21,7 @@ from app.live import LiveDienst, Verteiler
 @dataclass
 class Zustand:
     cfg: Konfig
-    engine: object
+    engine: Engine
     kette: AnbieterKette
     store: KursSpeicher = field(default_factory=KursSpeicher)
     verteiler: Verteiler = field(default_factory=Verteiler)
@@ -27,7 +29,7 @@ class Zustand:
     news: NewsProvider = field(default_factory=ManuellerNewsProvider)
     nicht_konfiguriert: list[dict] = field(default_factory=list)
     live: LiveDienst | None = None
-    scheduler: object | None = None
+    scheduler: Any = None
 
 
 def zustand(request: Request = None, websocket: WebSocket = None) -> Zustand:  # type: ignore[assignment]

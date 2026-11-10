@@ -225,6 +225,7 @@ class PositionsCheck(BaseModel):
     risiko: Risiko
     positionen: list[Position]
     gespeichert_am: datetime | None = None
+    bericht_id: int | None = None
 
 
 class Termin(BaseModel):
@@ -258,6 +259,7 @@ class Wochenbilanz(BaseModel):
     picks: list[dict[str, Any]]
     lehren: list[str]
     gespeichert_am: datetime | None = None
+    bericht_id: int | None = None
 
 
 class KalibrierungGruppe(BaseModel):

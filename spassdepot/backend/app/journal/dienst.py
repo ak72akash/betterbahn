@@ -78,7 +78,7 @@ class WarnDienst:
     def _lade(self, s: Session, tag: date) -> None:
         if self._geladen == tag:
             return
-        beginn = datetime.combine(tag, time(0, 0), BERLIN).astimezone(UTC).replace(tzinfo=None)
+        beginn = datetime.combine(tag, time(0, 0), BERLIN).astimezone(UTC)
         self._ausgeloest = {(a.trade_id, a.regel, tag) for a in
                             s.exec(select(t.Alert).where(t.Alert.zeit >= beginn)) if a.trade_id is not None}
         self._geladen = tag
@@ -91,7 +91,7 @@ class WarnDienst:
         neu: list[t.Alert] = []
         for p in positionen(s, store, g, now, symbol):
             for sig in filtere_neue_signale(p["signale"], p["trade_id"], tag, self._ausgeloest):
-                a = t.Alert(zeit=now.replace(tzinfo=None), position=p["wertpapier"], trade_id=p["trade_id"],
+                a = t.Alert(zeit=now, position=p["wertpapier"], trade_id=p["trade_id"],
                             regel=sig["regel"], text=sig["begruendung"])
                 s.add(a)
                 neu.append(a)
@@ -103,7 +103,7 @@ class WarnDienst:
 
 
 def alert_dict(a: t.Alert) -> dict:
-    return {"id": a.id, "zeit": a.zeit.replace(tzinfo=UTC).isoformat(), "position": a.position,
+    return {"id": a.id, "zeit": (a.zeit if a.zeit.tzinfo else a.zeit.replace(tzinfo=UTC)).isoformat(), "position": a.position,
             "trade_id": a.trade_id, "regel": a.regel, "text": a.text, "gelesen": a.gelesen}
 
 

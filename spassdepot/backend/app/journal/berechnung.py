@@ -77,7 +77,7 @@ def bewerte_position(tr, kurs: float | None, eurusd: float | None, heute: date,
         if tr.typ != "aktie" and gehalten >= int(g["ko_zeitstop_tage"]):
             signale = [s for s in ausstieg_knockout(0, gehalten, 100, g) if s.regel == "ko_zeitstop"]
     elif tr.typ == "aktie":
-        je = kurs / eurusd if usd else kurs
+        je = kurs / eurusd if (usd and eurusd) else kurs
         out.update(wert_je_stueck=je, wert=je * tr.stueck, perf_pct=(je / tr.kaufkurs - 1) * 100,
                    geschaetzt=usd,
                    hinweis="Aus US-Kurs und EUR/USD umgerechnet" if usd else None)

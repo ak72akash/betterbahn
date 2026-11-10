@@ -122,7 +122,7 @@ async def bewerte_picks(s: Session, kette) -> int:
 
 
 def speichere(s: Session, art: str, inhalt: dict) -> t.Bericht:
-    b = t.Bericht(art=art, zeit=datetime.now(UTC).replace(tzinfo=None), inhalt=json.dumps(inhalt, default=str))
+    b = t.Bericht(art=art, zeit=datetime.now(UTC), inhalt=json.dumps(inhalt, default=str))
     s.add(b)
     s.commit()
     s.refresh(b)
@@ -133,4 +133,4 @@ def letzter(s: Session, art: str) -> dict | None:
     b = s.exec(select(t.Bericht).where(t.Bericht.art == art).order_by(t.Bericht.zeit.desc())).first()  # type: ignore[attr-defined]
     if b is None:
         return None
-    return {**json.loads(b.inhalt), "gespeichert_am": b.zeit.replace(tzinfo=UTC).isoformat(), "bericht_id": b.id}
+    return {**json.loads(b.inhalt), "gespeichert_am": (b.zeit if b.zeit.tzinfo else b.zeit.replace(tzinfo=UTC)).isoformat(), "bericht_id": b.id}
