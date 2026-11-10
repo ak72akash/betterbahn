@@ -1,0 +1,23 @@
+# Start: docker compose up  ->  Frontend http://localhost:5173, Backend http://localhost:8000/api/docs
+services:
+  backend:
+    build: ./backend
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: sqlite:////daten/app.db
+      CORS_ORIGINS: http://localhost:5173
+    volumes:
+      - ./data:/daten
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    environment:
+      VITE_BACKEND: http://backend:8000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend

@@ -1,0 +1,55 @@
+name: Spaßdepot CI
+
+on:
+  push:
+    paths:
+      - "spassdepot/**"
+      - ".github/workflows/spassdepot.yml"
+  pull_request:
+    paths:
+      - "spassdepot/**"
+      - ".github/workflows/spassdepot.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend (Tests, Lint, Typen)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: spassdepot/backend
+    env:
+      LIVE_AKTIV: "0"
+      JOBS_AKTIV: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: spassdepot/backend/pyproject.toml
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: mypy app
+      - run: pytest -q
+
+  frontend:
+    name: Frontend (Tests, Lint, Typen)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: spassdepot/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: spassdepot/frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build

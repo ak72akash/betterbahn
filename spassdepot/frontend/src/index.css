@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@theme {
+  --color-grund: #121211;
+  --color-karte: #1a1a19;
+  --color-erhoben: #242422;
+  --color-linie: #33332f;
+  --color-text: #f0efec;
+  --color-text2: #c3c2b7;
+  --color-gedimmt: #8f8e86;
+  --color-akzent: #3987e5;
+  --color-serie2: #d95926;
+  --color-gut: #0ca30c;
+  --color-gut-text: #4cc94c;
+  --color-warn: #fab219;
+  --color-ernst: #ec835a;
+  --color-kritisch: #d03b3b;
+  --color-kritisch-text: #ef7a7a;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+html,
+body {
+  background: var(--color-grund);
+  color: var(--color-text);
+  -webkit-tap-highlight-color: transparent;
+}
+.zahl {
+  font-variant-numeric: tabular-nums;
+}
+input,
+select,
+textarea {
+  font-size: 16px; /* verhindert Zoom auf iOS */
+}
+input[type="range"] {
+  accent-color: var(--color-akzent);
+}
+
+@keyframes blink-auf {
+  from { background-color: color-mix(in oklab, var(--color-gut) 35%, transparent); }
+  to { background-color: transparent; }
+}
+@keyframes blink-ab {
+  from { background-color: color-mix(in oklab, var(--color-kritisch) 40%, transparent); }
+  to { background-color: transparent; }
+}
+.blink-auf { animation: blink-auf 0.9s ease-out; }
+.blink-ab { animation: blink-ab 0.9s ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .blink-auf, .blink-ab { animation: none; }
+}
