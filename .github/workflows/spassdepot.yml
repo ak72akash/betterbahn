@@ -46,8 +46,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: spassdepot/frontend/package-lock.json
+          # kein npm-Cache über setup-node: der Schritt läuft im Repo-Wurzelordner,
+          # dessen package.json pnpm vorschreibt und npm dort abbrechen lässt
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck

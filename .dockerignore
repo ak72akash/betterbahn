@@ -9,3 +9,6 @@ dist/
 
 # Enviroment files
 .env
+
+# Eigenständige App mit eigenem Build
+spassdepot
